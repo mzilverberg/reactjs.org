@@ -49,6 +49,10 @@ ol, ul {
   margin-left: 20px;
 }
 
+.active {
+  font-weight: bold;
+}
+
 button[disabled] {
   opacity: .5;
   color: #666;

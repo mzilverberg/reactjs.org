@@ -99,9 +99,10 @@ class Game extends React.Component {
       // Disable the button if it will jump to a future move
       // For example, you can't jump back from step 2 to step 1, and then back to step 2 
       const disabled = move > this.state.stepNumber;
+      const className = move === this.state.stepNumber ? 'active' : '';
 
       return (
-        <li key={move}>
+        <li key={move} class={className}>
           <button disabled={disabled} onClick={() => this.jumpTo(move)}>{desc}</button>
           <em>({step.desc})</em>
         </li>
