@@ -52,6 +52,7 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        desc: 'Game started'
       }],
       stepNumber: 0,
       xIsNext: true
@@ -68,9 +69,12 @@ class Game extends React.Component {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+    const desc = `${squares[i]} put in row ${calculateRow(i)}, column ${(i % 3) + 1}`
+
     this.setState({
       history: history.concat([{
-        squares: squares
+        squares: squares,
+        desc: desc
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext
@@ -88,12 +92,10 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    
-    const moves = history.map((step, move) => {
-      const desc = move ?
-        `Back to move #${move}` :
-        'Back to game start';
 
+    const moves = history.map((step, move) => {
+      const desc = move ? `Back to move #${move}` : 'Back to game start';
+      
       // Disable the button if it will jump to a future move
       // For example, you can't jump back from step 2 to step 1, and then back to step 2 
       const disabled = move > this.state.stepNumber;
@@ -101,6 +103,7 @@ class Game extends React.Component {
       return (
         <li key={move}>
           <button disabled={disabled} onClick={() => this.jumpTo(move)}>{desc}</button>
+          <em>({step.desc})</em>
         </li>
       )
     });
@@ -135,6 +138,20 @@ ReactDOM.render(
   <Game />,
   document.getElementById('root')
 );
+
+function calculateRow(i) {
+  const rows = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8]
+  ];
+  for(let j = 0; j < rows.length; j++) {
+    if(rows[j].indexOf(i) >= 0) {
+      return j + 1;
+    }
+  }
+  return null;
+}
 
 function calculateWinner(squares) {
   const lines = [
