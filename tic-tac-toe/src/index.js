@@ -14,33 +14,36 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-  renderSquare(i) {
+  renderSquares(indexes) {
+    const row = indexes.map((i) => {
+      return (
+        <Square 
+          key={i}
+          value={this.props.squares[i]}
+          onClick={() => {this.props.onClick(i)}}
+        />
+      )
+    });
+
     return (
-      <Square 
-        value={this.props.squares[i]}
-        onClick={() => {this.props.onClick(i)}}
-      />
+      <React.Fragment>
+        {row}
+      </React.Fragment>
     );
   }
 
-  render() {
+  render() {    
+    const grid = this.props.rows.map((squares, row) => {
+      return (
+        <div className="board-row" key={row}>
+          {this.renderSquares(squares)}
+        </div>
+      );
+    });
+
     return (
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {grid}
       </div>
     );
   }
@@ -69,7 +72,9 @@ class Game extends React.Component {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
-    const desc = `${squares[i]} put in row ${calculateRow(i)}, column ${(i % 3) + 1}`
+    const row = calculateRow(i, this.props.rows);
+    const col = i % 3 + 1;
+    const desc = `${squares[i]} put in row ${row}, column ${col}`;
 
     this.setState({
       history: history.concat([{
@@ -102,7 +107,7 @@ class Game extends React.Component {
       const className = move === this.state.stepNumber ? 'active' : '';
 
       return (
-        <li key={move} class={className}>
+        <li key={move} className={className}>
           <button disabled={disabled} onClick={() => this.jumpTo(move)}>{desc}</button>
           <em>({step.desc})</em>
         </li>
@@ -120,6 +125,7 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <Board
+            rows={this.props.rows}
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
           />
@@ -135,17 +141,18 @@ class Game extends React.Component {
 
 // ========================================
 
+var grid = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8]
+];
+
 ReactDOM.render(
-  <Game />,
+  <Game rows={grid} />,
   document.getElementById('root')
 );
 
-function calculateRow(i) {
-  const rows = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8]
-  ];
+function calculateRow(i, rows) {
   for(let j = 0; j < rows.length; j++) {
     if(rows[j].indexOf(i) >= 0) {
       return j + 1;
