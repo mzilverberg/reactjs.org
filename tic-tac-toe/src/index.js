@@ -91,14 +91,19 @@ class Game extends React.Component {
     
     const moves = history.map((step, move) => {
       const desc = move ?
-        `Go to move #${move}` :
-        'Go to game start';
+        `Back to move #${move}` :
+        'Back to game start';
+
+      // Disable the button if it will jump to a future move
+      // For example, you can't jump back from step 2 to step 1, and then back to step 2 
+      const disabled = move > this.state.stepNumber;
+
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button disabled={disabled} onClick={() => this.jumpTo(move)}>{desc}</button>
         </li>
       )
-    })
+    });
 
     let status;
     if(winner) {

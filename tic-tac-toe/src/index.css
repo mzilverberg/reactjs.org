@@ -48,3 +48,8 @@ ol, ul {
 .game-info {
   margin-left: 20px;
 }
+
+button[disabled] {
+  opacity: .5;
+  color: #666;
+}
