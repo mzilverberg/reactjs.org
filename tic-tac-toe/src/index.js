@@ -2,6 +2,57 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+class SortableHistory extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      reversed: false
+    }
+    this.onHandleHistorySort = this.onHandleHistorySort.bind(this);
+    this.onHandleHistoryJump = this.onHandleHistoryJump.bind(this);
+  }
+
+  onHandleHistorySort() {
+    this.props.onHandleHistorySort();
+    this.setState({
+      reversed: !this.state.reversed
+    });
+  }
+
+  onHandleHistoryJump(stepIndex) {
+    this.props.onHandleHistoryJump(stepIndex);
+  }
+
+  render() {
+    const sortLabel = 'Sort history ' + (this.state.reversed ? 'ascending' : 'descending');
+    const moves = this.props.history.map((step, stepIndex) => {
+      const desc = stepIndex ? `Back to move #${stepIndex}` : 'Back to game start';
+      // Disable the button if it will jump to a future move
+      // For example, you can't jump back from step 2 to step 1, and then back to step 2 
+      const disabled = stepIndex > this.props.stepNumber;
+      const className = stepIndex === this.props.stepNumber ? 'active' : '';
+
+      return (
+        <li key={stepIndex} className={className}>
+          <button disabled={disabled} onClick={() => this.onHandleHistoryJump(stepIndex)}>
+            {desc}
+          </button>
+          <em>({step.desc})</em>
+        </li>
+      );
+    });
+
+    return (
+      <React.Fragment>
+        <ol reversed={this.state.reversed}>{moves}</ol>
+        <button onClick={this.onHandleHistorySort}>
+          {sortLabel}
+        </button>
+      </React.Fragment>
+    );
+  }
+}
+
 function Square(props) {
   return (
     <button
@@ -65,6 +116,22 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true
     }
+    this.onHandleHistorySort = this.onHandleHistorySort.bind(this);
+    this.onHandleHistoryJump = this.onHandleHistoryJump.bind(this);
+  }
+
+  onHandleHistorySort() {
+    const reversed = this.state.history.slice(0).reverse();
+    this.setState({
+      history: reversed,
+    });
+  }
+
+  onHandleHistoryJump(stepIndex) {
+    this.setState({
+      stepNumber: stepIndex,
+      xIsNext: (stepIndex % 2) === 0
+    });
   }
 
   handleClick(i, position) {
@@ -89,33 +156,10 @@ class Game extends React.Component {
     });
   }
 
-  jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0
-    });
-  }
-
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-
-    const moves = history.map((step, move) => {
-      const desc = move ? `Back to move #${move}` : 'Back to game start';
-      
-      // Disable the button if it will jump to a future move
-      // For example, you can't jump back from step 2 to step 1, and then back to step 2 
-      const disabled = move > this.state.stepNumber;
-      const className = move === this.state.stepNumber ? 'active' : '';
-
-      return (
-        <li key={move} className={className}>
-          <button disabled={disabled} onClick={() => this.jumpTo(move)}>{desc}</button>
-          <em>({step.desc})</em>
-        </li>
-      )
-    });
 
     let status;
     if(winner) {
@@ -135,7 +179,12 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <SortableHistory
+            onHandleHistorySort={this.onHandleHistorySort}
+            onHandleHistoryJump={(stepIndex) => this.onHandleHistoryJump(stepIndex)}
+            stepNumber={this.state.stepNumber}
+            history={history}
+          />
         </div>
       </div>
     );
