@@ -139,18 +139,7 @@ class Game extends React.Component {
   }
 }
 
-// ========================================
-
-var grid = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8]
-];
-
-ReactDOM.render(
-  <Game rows={grid} />,
-  document.getElementById('root')
-);
+// =========== HELPER FUNCTIONS ===========
 
 function calculateRow(i, rows) {
   for(let j = 0; j < rows.length; j++) {
@@ -180,3 +169,17 @@ function calculateWinner(squares) {
   }
   return null;
 }
+
+// ========================================
+
+var grid = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8]
+];
+
+ReactDOM.render(
+  <Game rows={grid} />,
+  document.getElementById('root')
+);
+
