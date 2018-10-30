@@ -13,7 +13,6 @@ class SortableHistory extends React.Component {
   }
 
   onHandleHistorySort() {
-    this.props.onHandleHistorySort();
     this.setState({
       reversed: !this.state.reversed
     });
@@ -41,6 +40,10 @@ class SortableHistory extends React.Component {
         </li>
       );
     });
+
+    if(this.state.reversed) {
+      moves.reverse();
+    }
 
     return (
       <React.Fragment>
@@ -116,15 +119,7 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true
     }
-    this.onHandleHistorySort = this.onHandleHistorySort.bind(this);
     this.onHandleHistoryJump = this.onHandleHistoryJump.bind(this);
-  }
-
-  onHandleHistorySort() {
-    const reversed = this.state.history.slice(0).reverse();
-    this.setState({
-      history: reversed,
-    });
   }
 
   onHandleHistoryJump(stepIndex) {
@@ -180,7 +175,6 @@ class Game extends React.Component {
         <div className="game-info">
           <div>{status}</div>
           <SortableHistory
-            onHandleHistorySort={this.onHandleHistorySort}
             onHandleHistoryJump={(stepIndex) => this.onHandleHistoryJump(stepIndex)}
             stepNumber={this.state.stepNumber}
             history={history}
