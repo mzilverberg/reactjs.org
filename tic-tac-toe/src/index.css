@@ -31,6 +31,9 @@ ol, ul {
   text-align: center;
   width: 34px;
 }
+.square.winning {
+  color: #f00;
+}
 
 .square:focus {
   outline: none;
@@ -47,6 +50,7 @@ ol, ul {
 
 .game-info {
   margin-left: 20px;
+  flex-grow: 1;
 }
 
 .active {
@@ -56,4 +60,8 @@ ol, ul {
 button[disabled] {
   opacity: .5;
   color: #666;
+}
+
+button[disabled] + em {
+  color: #ccc;
 }
