@@ -153,9 +153,21 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares).winner;
     const winningSquares = calculateWinner(current.squares).winningSquares;
 
+    /* 
+     * Determine whether the game ended as a draw by making sure that:
+     * - all the squares are filled
+     * - there is no winner (the win could take place in the last move)
+     */
+    const allSquaresFilled = current.squares.slice(0).filter(function(item) {
+      return item !== null;
+    }).length === 9;
+    const endedAsDraw = allSquaresFilled && !winner;
+
     let status;
     if(winner) {
       status = `Winner: ${winner}`;
+    } else if(endedAsDraw) {
+      status = 'The game ended as a draw';
     } else {
       status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
     }
