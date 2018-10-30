@@ -57,7 +57,7 @@ class SortableHistory extends React.Component {
 }
 
 function Square(props) {
-  const className = `square ${props.winningClass}`;
+  const className = `square ${props.isWinningSquare ? 'winning' : ''}`;
   return (
     <button
       className={className}
@@ -69,39 +69,31 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-  renderSquares(indexes, winningSquares) {
-    const row = indexes.map((i) => {
-      // Get position of the square in the grid
-      const position = {
-        column: i % 3 + 1,
-        row: calculateRow(i, this.props.rows)
-      }
-      const className = winningSquares && winningSquares.indexOf(i) >= 0 ? 'winning' : '';
-      return (
-        <Square 
-          key={i}
-          winningClass={className}
-          value={this.props.squares[i]}
-          onClick={() => {this.props.onClick(i, position)}}
-        />
-      )
-    });
-
-    return (
-      <React.Fragment>
-        {row}
-      </React.Fragment>
-    );
-  }
-
   render() {
     const winningSquares = this.props.winningSquares;
-    const grid = this.props.rows.map((squares, row) => {
-      return (
-        <div className="board-row" key={row}>
-          {this.renderSquares(squares, winningSquares)}
-        </div>
-      );
+    let grid = [];
+    
+    this.props.rows.forEach((squares, i) => {
+      let row = [];
+      squares.forEach((square, j) => {
+        // Mark the the current square if it is found in the winningSquares array
+        const isWinningSquare = winningSquares && winningSquares.indexOf(square) >= 0 ? true : false;
+        // Pass position in grid to onClick handler to provide feedback about a move
+        const position = {
+          row: i + 1,
+          column: j + 1
+        }
+
+        row.push(
+          <Square 
+            key={square}
+            value={this.props.squares[square]}
+            isWinningSquare={isWinningSquare}
+            onClick={() => {this.props.onClick(square, position)}}
+          />
+        );
+      });
+      grid.push(<div className='board-row' key={i}>{row}</div>);
     });
 
     return (
@@ -192,15 +184,6 @@ class Game extends React.Component {
 }
 
 // =========== HELPER FUNCTIONS ===========
-
-function calculateRow(i, rows) {
-  for(let j = 0; j < rows.length; j++) {
-    if(rows[j].indexOf(i) >= 0) {
-      return j + 1;
-    }
-  }
-  return null;
-}
 
 function calculateWinner(squares) {
   const lines = [
