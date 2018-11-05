@@ -27,7 +27,7 @@ class SortableHistory extends React.Component {
     const moves = this.props.history.map((step, stepIndex) => {
       const desc = stepIndex ? `Back to move #${stepIndex}` : 'Back to game start';
       // Disable the button if it will jump to a future move
-      // For example, you can't jump back from step 2 to step 1, and then back to step 2 
+      // For example, you can't jump back from step 4 to step 3, and then back to step 4 
       const disabled = stepIndex > this.props.stepNumber;
       const className = stepIndex === this.props.stepNumber ? 'active' : '';
 
