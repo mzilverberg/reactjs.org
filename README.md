@@ -8,7 +8,7 @@ In this repository you can find my solutions for the [tic-tac-toe tutorial](http
 5. When someone wins, highlight the three squares that caused the win.
 6. When no one wins, display a message about the result being a draw.
 
-Additionally, as a personal challenge, I prevented jumping back and forth in history. For example, when jumping from step 4 to 3, you can't go back to step 4. Only the buttons for steps 1-3 are enabled. You can easily disable this feature by changing line 31 of [src/index.js](https://github.com/mzilverberg/reactjs.org/blob/master/src/index.js):
+Additionally, as a personal challenge, I prevented jumping back and forth in history. For example, when jumping from step 4 to 3, you can't go back to step 4. Only the buttons for steps 1-3 are enabled. You can easily disable this feature by changing line 31 of [src/index.js](src/index.js):
 ```js
 // Original line 31 code
 const disabled = stepIndex > this.props.stepNumber;
